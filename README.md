@@ -1,1 +1,1 @@
-# patrimoine
+Robot de cours et de vidéos pour l'app patrimoine. data/cours.json : cours Yahoo (toutes les 15 min en séance, clôture le soir). data/videos.json : dernières vidéos des chaînes suivies avec transcriptions (toutes les 3 h).
