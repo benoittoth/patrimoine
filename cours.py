@@ -1,4 +1,5 @@
-import json, datetime as dt, time
+import json, os, datetime as dt, time
+os.makedirs("data", exist_ok=True)
 import yfinance as yf
 syms = json.load(open("symbols.json"))
 out = {"updated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "quotes": {}}

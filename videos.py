@@ -1,4 +1,5 @@
-import json, re, datetime as dt, urllib.request
+import json, os, re, datetime as dt, urllib.request
+os.makedirs("data", exist_ok=True)
 from youtube_transcript_api import YouTubeTranscriptApi
 chans = json.load(open("channels.json"))
 try: old = json.load(open("data/videos.json"))
