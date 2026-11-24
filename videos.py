@@ -5,11 +5,13 @@ chans = json.load(open("channels.json"))
 try: old = json.load(open("data/videos.json"))
 except Exception: old = {"videos": {}}
 vids = old.get("videos", {})
-ua = {"User-Agent": "Mozilla/5.0"}
+ua = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36", "Accept-Language": "fr-FR,fr;q=0.9", "Cookie": "SOCS=CAI; CONSENT=YES+cb"}
 for c in chans:
     try:
         html = urllib.request.urlopen(urllib.request.Request(f"https://www.youtube.com/@{c['handle']}", headers=ua), timeout=20).read().decode("utf8", "ignore")
-        cid = re.search(r'"channelId":"(UC[\w-]+)"', html).group(1)
+        m = re.search(r'"(?:channelId|externalId)":"(UC[\w-]{22})"', html) or re.search(r'channel/(UC[\w-]{22})', html)
+        if not m: raise ValueError("id de chaîne introuvable")
+        cid = m.group(1)
         rss = urllib.request.urlopen(urllib.request.Request(f"https://www.youtube.com/feeds/videos.xml?channel_id={cid}", headers=ua), timeout=20).read().decode("utf8", "ignore")
     except Exception as e:
         print(c["name"], "erreur", e); continue
