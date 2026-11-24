@@ -15,9 +15,12 @@ for c in chans:
         rss = urllib.request.urlopen(urllib.request.Request(f"https://www.youtube.com/feeds/videos.xml?channel_id={cid}", headers=ua), timeout=20).read().decode("utf8", "ignore")
     except Exception as e:
         print(c["name"], "erreur", e); continue
-    for vid, title, pub in re.findall(r"<yt:videoId>([\w-]+)</yt:videoId>.*?<title>(.*?)</title>.*?<published>(.*?)</published>", rss, re.S)[:5]:
+    for ent in re.findall(r"<entry>(.*?)</entry>", rss, re.S)[:5]:
+        g = lambda p: (re.search(p, ent, re.S) or [None, ""])[1]
+        vid, title, pub, desc = g(r"<yt:videoId>([\w-]+)</yt:videoId>"), g(r"<title>(.*?)</title>"), g(r"<published>(.*?)</published>"), g(r"<media:description>(.*?)</media:description>")
         if vid in vids and vids[vid].get("transcript"): continue
         item = vids.get(vid, {"channel": c["name"], "title": title, "date": pub[:10], "url": f"https://www.youtube.com/watch?v={vid}"})
+        item["description"] = desc[:4000]
         try:
             tr = YouTubeTranscriptApi().fetch(vid, languages=["fr", "en"])
             item["transcript"] = " ".join(s.text for s in tr)[:60000]
