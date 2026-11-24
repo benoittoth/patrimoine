@@ -1,6 +1,6 @@
 """Prépare la mise à jour de l'app depuis data/cours.json.
 Usage : python app_sync.py lines.json > updates.json
-lines.json = liste [{id, version, yf, yfFx, price, priceDate}] lue dans la collection lines.
+lines.json = liste [{id, version, yf, yfFx, price, priceDate, watch}] lue dans les collections lines et watch (watch:true pour ces dernières, jamais modifiées).
 Sortie : {"lines":[{id, ifVersion, price, priceDate}], "quotes":[{id, closes, h6, h5, at, src}]}"""
 import json, sys, datetime as dt
 cours = json.load(open("data/cours.json"))["quotes"]
@@ -35,7 +35,7 @@ for l in lines:
     date = max(closes) if closes else dt.date.today().isoformat()
     closes[date] = price
     old = l.get("price") or price
-    if abs(price - old) / old < 0.25 and (price != l.get("price") or date != l.get("priceDate")):
+    if not l.get("watch") and abs(price - old) / old < 0.25 and (price != l.get("price") or date != l.get("priceDate")):
         res["lines"].append({"id": l["id"], "ifVersion": l["version"], "price": price, "priceDate": date})
     qid = "yf_" + "".join(c if c.isalnum() else "_" for c in l["yf"])
     if qid not in done:
