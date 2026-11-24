@@ -12,7 +12,10 @@ for s in syms:
             closes = {d.strftime("%Y-%m-%d"): round(float(c), 4) for d, c in h["Close"].dropna().items()}
             fi = t.fast_info
             last = float(fi.get("lastPrice") or list(closes.values())[-1])
+            w = t.history(period="5y", interval="1wk", auto_adjust=False)
+            weekly = {d.strftime("%Y-%m-%d"): round(float(c), 4) for d, c in w["Close"].dropna().items()}
             out["quotes"][s] = {
+                "weekly": weekly,
                 "price": round(last, 4),
                 "time": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
                 "currency": fi.get("currency"),
