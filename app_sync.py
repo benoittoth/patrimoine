@@ -28,7 +28,7 @@ res = {"lines": [], "quotes": []}; done = set()
 for l in lines:
     q = cours.get(l.get("yf") or "")
     if not q or "price" not in q: continue
-    usd = bool(l.get("yfFx"))
+    usd = q.get("currency") == "USD" if q.get("currency") else bool(l.get("yfFx"))
     closes = conv(q["closes"], fxd) if usd else q["closes"]
     weekly = conv(q.get("weekly", {}), fxw) if usd else q.get("weekly", {})
     price = round(q["price"] / fx["price"], 4) if usd else q["price"]
