@@ -42,4 +42,7 @@ for l in lines:
         done.add(qid)
         last45 = dict(sorted(closes.items())[-45:])
         res["quotes"].append({"id": qid, "src": "yahoo-github", "at": now, "closes": last45, "h6": enc(closes, 130), "h5": enc(weekly, 270)})
+if "EURUSD=X" in cours and "price" in fx and "yf_EURUSD_X" not in done:
+    c = dict(fxd); c[max(c) if c else dt.date.today().isoformat()] = fx["price"]
+    res["quotes"].append({"id": "yf_EURUSD_X", "src": "yahoo-github", "at": now, "closes": dict(sorted(c.items())[-45:]), "h6": None, "h5": None})
 print(json.dumps(res, ensure_ascii=False))
